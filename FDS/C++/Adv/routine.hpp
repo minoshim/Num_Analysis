@@ -9,16 +9,25 @@
 #include <cstdlib>
 #include <cmath>
 #include <time.h>
+#include "adv1d.hpp"
 #include "bound.hpp"
-#include "ftcs.hpp"
 
-int fout(const double* x, const char s[100], int nx, bool flag)
+template <typename T>
+int fout(const T* x, const char s[100], int nx, bool flag)
 // Output ascii file
 {
   FILE* fil;
+  const char* fmt=nullptr;
+
+  if constexpr (std::is_same_v<T, double>) {
+    fmt = "%.15f\n";
+  } else if constexpr (std::is_same_v<T, int>) {
+    fmt = "%d\n";
+  }
+
   if ( (fil=fopen(s,(flag)?"a":"w")) != NULL){
     for (int i=0;i<nx;i++){
-      fprintf(fil,"%.15f\n",x[i]);
+      fprintf(fil,fmt,x[i]);
     }
     fclose(fil);
   } else{

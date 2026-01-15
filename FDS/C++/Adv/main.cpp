@@ -4,13 +4,14 @@
 int main(void)
 {
   int i,n;
-  const int nx=XMESH+2*XOFF;
-  const int nrec=10;
-  const int nmax=nrec*100;
-  const double lx=1.0;
-  const double dx=lx/XMESH;
-  const double v=1.0;
-  const double dt=fabs(CFL*dx/v);
+  const int xoff=XOFF;
+  const int nx=XMESH+2*xoff;
+  const int nrec=NREC;
+  const int nmax=NMAX;
+  const double lx=1.0;		// Domain size
+  const double dx=lx/XMESH;	// Grid spacing
+  const double v=1.0;		// Velcity
+  const double dt=fabs(CFL*dx/v); // Time step
   double t=0.0;
   double *x,*f;
   x=new double[nx]();
@@ -18,19 +19,22 @@ int main(void)
 
   // Initialize
   for (i=0;i<nx;i++){
-    x[i]=(i+0.5-XOFF)*dx;
-    f[i]=(i > nx/4 && i < 3*nx/4)?1.0:0.0;
+    x[i]=(i+0.5-xoff)*dx-0.5*lx;
+    // f[i]=(i > nx/4 && i < 3*nx/4)?1.0:0.0; // Square wave
+    f[i]=exp(-(x[i]*x[i])/(16*dx*dx));	   // Gaussian
   }
 
   // Output
+  fout(&xoff,"xoff.dat",1,0);
   fout( x,"x.dat",nx,0);
   fout( f,"f.dat",nx,0);
   fout(&t,"t.dat",1, 0);
-
+  
   // Integration
   while(n++ < nmax){
-    bound(f,nx,XOFF,0);
-    ftcs(f,v,dt,dx,nx,XOFF);
+    bound(f,nx,xoff,0);
+    // ftcs(f,v,dt,dx,nx,xoff);
+    upwd(f,v,dt,dx,nx,xoff);
     t+=dt;
 
     // Output
