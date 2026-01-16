@@ -35,6 +35,7 @@ int main(void)
     bound(f,nx,xoff,0);
     // ftcs(f,v,dt,dx,nx,xoff);
     upwd(f,v,dt,dx,nx,xoff);
+    // lawe(f,v,dt,dx,nx,xoff);
     t+=dt;
 
     // Output
