@@ -31,8 +31,8 @@ int main(void)
   
   // Integration
   while(n++ < nmax){
-    bound(f,nx,xoff,0);
-    dif1de(f,kx,dt,dx,nx,xoff);
+    bound(f,nx,xoff,1);
+    dif1di(f,kx,dt,dx,nx,xoff);
     t+=dt;
 
     // Output
