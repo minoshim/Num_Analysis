@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <time.h>
-#include "adv1d.hpp"
+#include "dif1d.hpp"
 #include "bound.hpp"
 
 template <typename T>

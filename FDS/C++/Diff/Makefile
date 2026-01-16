@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -O2 -march=native
 
-OBJ = main.o adv1d.o bound.o
+OBJ = main.o dif1d.o bound.o
 
 .PHONY : all
 .PHONY : clean
@@ -17,7 +17,7 @@ clean :
 cdata :
 	rm *.dat -f
 
-adv1d.o : adv1d.hpp
+dif1d.o : dif1d.hpp
 bound.o : bound.hpp
 
-main.o : adv1d.o bound.o adv1d.hpp bound.hpp cnst.hpp routine.hpp
+main.o : dif1d.o bound.o dif1d.hpp bound.hpp cnst.hpp routine.hpp
