@@ -10,7 +10,7 @@ TARGET = a.out
 all : $(TARGET)
 
 $(TARGET) : $(OBJ)
-	$(CXX) -o $@ $(OBJ) $(CXXFLAGS)
+	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 %.o : %.cpp
 	$(CXX) -c $< $(CXXFLAGS) -I$(INCDIR)

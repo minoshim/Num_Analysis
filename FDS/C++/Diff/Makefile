@@ -1,23 +1,28 @@
-CC = g++
-CFLAGS = -O2 -march=native
+CXX = g++
+CXXFLAGS = -O2 -march=native
+INCDIR = ../common
 
-OBJ = main.o dif1d.o bound.o
+OBJ = main.o dif1d.o $(INCDIR)/bound.o
+TARGET = a.out
 
-.PHONY : all
-.PHONY : clean
+.PHONY : all clean cdata
 
-all : $(OBJ)
-	$(CC) -o a.out $(OBJ) $(CFLAGS)
+all : $(TARGET)
+
+$(TARGET) : $(OBJ)
+	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 %.o : %.cpp
-	$(CC) -c $< $(CFLAGS)
+	$(CXX) -c $< $(CXXFLAGS) -I$(INCDIR)
+
+$(INCDIR)/bound.o:
+	make -C $(INCDIR)
 
 clean :
-	rm *.o *.out -f
+	rm -f *.o $(TARGET)
 cdata :
-	rm *.dat -f
+	rm -f *.dat
 
 dif1d.o : dif1d.hpp
-bound.o : bound.hpp
 
-main.o : dif1d.o bound.o dif1d.hpp bound.hpp cnst.hpp routine.hpp
+main.o : dif1d.o dif1d.hpp cnst.hpp routine.hpp $(INCDIR)
