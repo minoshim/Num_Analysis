@@ -1,6 +1,6 @@
 #include "bound.hpp"
 
-void bound(double *f, int nx, int xoff, int dnx)
+void bc1d(double *f, int nx, int xoff, int dnx)
 // 1D boundary condition
 // dn: 0 for periodic, -1 for fix, +1 for free
 {

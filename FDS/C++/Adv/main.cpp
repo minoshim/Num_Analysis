@@ -32,7 +32,7 @@ int main(void)
   
   // Integration
   while(n++ < nmax){
-    bound(f,nx,xoff,0);
+    bc1d(f,nx,xoff,0);
     // ftcs(f,v,dt,dx,nx,xoff);
     upwd(f,v,dt,dx,nx,xoff);
     // lawe(f,v,dt,dx,nx,xoff);

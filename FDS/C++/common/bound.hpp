@@ -3,6 +3,6 @@
 
 #include <cmath>
 
-void bound(double *f, int nx, int xoff, int dnx=0);
+void bc1d(double *f, int nx, int xoff, int dnx=0);
 
 #endif

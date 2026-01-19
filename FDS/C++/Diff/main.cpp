@@ -31,7 +31,7 @@ int main(void)
   
   // Integration
   while(n++ < nmax){
-    bound(f,nx,xoff,1);
+    bc1d(f,nx,xoff,1);
     dif1di(f,kx,dt,dx,nx,xoff);
     t+=dt;
 
