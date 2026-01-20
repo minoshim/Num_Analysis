@@ -25,4 +25,4 @@ cdata :
 
 dif1d.o : dif1d.hpp
 
-main.o : dif1d.o dif1d.hpp cnst.hpp routine.hpp $(INCDIR)
+main.o : dif1d.o dif1d.hpp cnst.hpp $(INCDIR)

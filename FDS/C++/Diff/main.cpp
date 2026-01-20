@@ -1,5 +1,6 @@
 #include "cnst.hpp"
 #include "routine.hpp"
+#include "dif1d.hpp"
 
 int main(void)
 {

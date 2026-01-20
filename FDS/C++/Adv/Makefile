@@ -25,4 +25,4 @@ cdata :
 
 adv1d.o : adv1d.hpp
 
-main.o : adv1d.o adv1d.hpp cnst.hpp routine.hpp $(INCDIR)
+main.o : adv1d.o adv1d.hpp cnst.hpp $(INCDIR)
