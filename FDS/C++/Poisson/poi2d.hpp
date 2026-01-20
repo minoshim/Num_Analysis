@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cmath>
+#include "bound.hpp"
 
 double poi2d_ja(double* f, double* rhs,
 		double dx, double dy,

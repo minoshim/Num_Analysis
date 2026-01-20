@@ -19,7 +19,8 @@ double poi2d_ja(double* f, double* rhs,
   double* fold=new double[nx*ny];
 
   // Boundary condition
-
+  bc2d(f,nx,ny,xoff,yoff,dnx,dny);
+  
   for (j=yoff;j<ny-yoff;j++){
     for (i=xoff;i<nx-xoff;i++){
       double resid=dxdy2*rhs[nx*j+i]*denom;
@@ -45,6 +46,7 @@ double poi2d_ja(double* f, double* rhs,
       }
     }
     // Boundary condition
+    bc2d(f,nx,ny,xoff,yoff,dnx,dny);
     
   } while( (anorm > eps2*anormf) && (++cnt < itmax) );
 
@@ -57,6 +59,7 @@ double poi2d_gs(double* f, double* rhs,
 		int nx, int ny, int xoff, int yoff,
 		int dnx, int dny,
 		double eps, int itmax, double omega)
+{
   // Solve 2D poisson equation d2f/dx2+d2f/dy2 = -rhs using red-black Gauss-Seidel method
   // dx and dy are constant grid width
   // omega(<=2) is optimization paramter for SOR method
@@ -69,6 +72,7 @@ double poi2d_gs(double* f, double* rhs,
   double anorm,anormf=0.0;
 
   // Boundary condition
+  bc2d(f,nx,ny,xoff,yoff,dnx,dny);
 
   for (j=yoff;j<ny-yoff;j++){
     for (i=xoff;i<nx-xoff;i++){
@@ -95,10 +99,10 @@ double poi2d_gs(double* f, double* rhs,
       }
     }
     // Boundary condition
+    bc2d(f,nx,ny,xoff,yoff,dnx,dny);
     
   } while( (anorm > eps2*anormf) && (++cnt < itmax) );
 
   return sqrt(anorm/anormf);
-{
 }
 
