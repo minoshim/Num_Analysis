@@ -6,7 +6,7 @@ while True:
     try:
         t=np.atleast_1d(np.loadtxt(direc+"t.dat",dtype=float))
         x=np.loadtxt(direc+"x.dat",dtype=float)
-        xoff=int(np.loadtxt(direc+"xoff.dat",dtype=float))
+        xoff=np.loadtxt(direc+"xoff.dat",dtype=int)
         nt=np.size(t)
         nx=np.size(x)
         f=np.loadtxt(direc+"f.dat",dtype=float).reshape((nt,nx))
