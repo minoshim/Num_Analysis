@@ -34,15 +34,14 @@ int main(void)
     for (i=0;i<nx;i++){
       int ss=nx*j+i;
       f[ss]=0.0;
-      rhs[ss]=rand_noise(params,seed);
-      rhs[ss]=sin(x[i])*sin(y[j]);
+      // rhs[ss]=rand_noise(params,seed);
+      rhs[ss]=sin(2*x[i])*sin(3*y[j]);
     }
   }
   bc2d(rhs,nx,ny,xoff,yoff,0,0);
   
   // Solve Poisson equation
-  // poi2d_ja(f,rhs,dx,dy,nx,ny,xoff,yoff,0,0);
-  poi2d_gs(f,rhs,dx,dy,nx,ny,xoff,yoff,0,0,1e-6,12800);
+  poi2d_ja(f,rhs,dx,dy,nx,ny,xoff,yoff,0,0,1e-6,8192);
   
   // Output
   fout(offs,"offs.dat",2,0);

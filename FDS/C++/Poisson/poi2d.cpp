@@ -47,7 +47,7 @@ double poi2d_ja(double* f, double* rhs,
     }
     // Boundary condition
     bc2d(f,nx,ny,xoff,yoff,dnx,dny);
-    
+    // std::cout<<cnt<<' '<<sqrt(anorm/anormf)<<std::endl;
   } while( (anorm > eps2*anormf) && (++cnt < itmax) );
 
   delete[] fold;
@@ -100,7 +100,7 @@ double poi2d_gs(double* f, double* rhs,
     }
     // Boundary condition
     bc2d(f,nx,ny,xoff,yoff,dnx,dny);
-    
+    // std::cout<<cnt<<' '<<sqrt(anorm/anormf)<<std::endl;
   } while( (anorm > eps2*anormf) && (++cnt < itmax) );
 
   return sqrt(anorm/anormf);
