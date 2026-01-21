@@ -41,7 +41,7 @@ int main(void)
   bc2d(rhs,nx,ny,xoff,yoff,0,0);
   
   // Solve Poisson equation
-  poi2d_ja(f,rhs,dx,dy,nx,ny,xoff,yoff,0,0,1e-6,8192);
+  poi2d_gs(f,rhs,dx,dy,nx,ny,xoff,yoff,0,0,1e-6,8192);
   
   // Output
   fout(offs,"offs.dat",2,0);

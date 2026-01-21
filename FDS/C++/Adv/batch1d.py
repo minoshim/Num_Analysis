@@ -1,1 +1,1 @@
-../Python/batch1d.py
+python/batch1d.py
