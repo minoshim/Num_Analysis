@@ -25,4 +25,4 @@ cdata :
 
 poi2d.o : poi2d.hpp
 
-main.o : poi2d.o poi2d.hpp cnst.hpp routine.hpp $(INCDIR)
+main.o : poi2d.o poi2d.hpp cnst.hpp $(INCDIR)

@@ -3,7 +3,7 @@
 
 #define XOFF (2)		// Number of ghost grid in each boundary (def. = 2)
 #define YOFF (XOFF)		// Number of ghost grid in each boundary (def. = 2)
-#define XMESH (100)		// Number of grids in computational domain 
-#define YMESH (100)		// Number of grids in computational domain 
+#define XMESH (64)		// Number of grids in computational domain 
+#define YMESH (64)		// Number of grids in computational domain 
 
 #endif
