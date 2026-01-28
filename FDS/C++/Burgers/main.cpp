@@ -21,7 +21,8 @@ int main(void)
   // Initialize
   for (i=0;i<nx;i++){
     x[i]=(i+0.5-xoff)*dx-0.5*lx;
-    f[i]=v*exp(-(x[i]*x[i])/(4*dx*dx));	   // Gaussian
+    f[i]=(i > nx/4 && i < 3*nx/4)?v:v/5; // Square wave
+    // f[i]=v*(0.2+0.8*exp(-(x[i]*x[i])/(64*dx*dx)));	   // Gaussian
   }
 
   // Output
@@ -33,7 +34,8 @@ int main(void)
   // Integration
   while(n++ < nmax){
     bc1d(f,nx,xoff,0);
-    bgs_fd(f,dt,dx,nx,xoff);
+    // bgs_fd(f,dt,dx,nx,xoff);
+    bgs_fv(f,dt,dx,nx,xoff);
     t+=dt;
 
     // Output
