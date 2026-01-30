@@ -14,9 +14,7 @@ int main(void)
   const double kx=1.0;		// Diffusion coefficient
   const double dt=fabs(CFL*dx*dx/kx); // Time step
   double t=0.0;
-  double *x,*f;
-  x=new double[nx]();
-  f=new double[nx]();
+  double x[nx],f[nx];
 
   // Initialize
   for (i=0;i<nx;i++){

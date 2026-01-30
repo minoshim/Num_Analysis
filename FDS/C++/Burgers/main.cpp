@@ -14,9 +14,7 @@ int main(void)
   const double v=1.0;		// Peak Velcity
   const double dt=fabs(CFL*dx/v); // Time step
   double t=0.0;
-  double *x,*f;
-  x=new double[nx]();
-  f=new double[nx]();
+  double x[nx],f[nx];
 
   // Initialize
   for (i=0;i<nx;i++){
