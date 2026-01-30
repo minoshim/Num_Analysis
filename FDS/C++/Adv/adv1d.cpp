@@ -1,3 +1,5 @@
+#include "adv1d.hpp"
+
 void ftcs(double* f, double v, double dt, double dx, int nx, int xoff)
 // Solve 1D advection equation using FTCS scheme
 // f = dependent variable

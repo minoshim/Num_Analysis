@@ -19,8 +19,8 @@ int main(void)
   // Initialize
   for (i=0;i<nx;i++){
     x[i]=(i+0.5-xoff)*dx-0.5*lx;
-    // f[i]=(i > nx/4 && i < 3*nx/4)?1.0:0.0; // Square wave
-    f[i]=exp(-(x[i]*x[i])/(16*dx*dx));	   // Gaussian
+    f[i]=(i > nx/4 && i < 3*nx/4)?1.0:0.0; // Square wave
+    // f[i]=exp(-(x[i]*x[i])/(16*dx*dx));	   // Gaussian
   }
 
   // Output
@@ -32,9 +32,13 @@ int main(void)
   // Integration
   while(n++ < nmax){
     bc1d(f,nx,xoff,0);
-    // ftcs(f,v,dt,dx,nx,xoff);
-    upwd(f,v,dt,dx,nx,xoff);
-    // lawe(f,v,dt,dx,nx,xoff);
+    // 2nd-order RK
+    double fcpy[nx];
+    for (i=0;i<nx;i++) fcpy[i]=f[i];
+    muscl(f,v,dt,dx,nx,xoff);
+    bc1d(f,nx,xoff,0);
+    muscl(f,v,dt,dx,nx,xoff);
+    for (i=0;i<nx;i++) f[i]=0.5*(f[i]+fcpy[i]);
   
     t+=dt;
 
@@ -47,11 +51,3 @@ int main(void)
   
   return 0;
 }
-
-    // // 2nd-order RK
-    // double fcpy[nx];
-    // for (i=0;i<nx;i++) fcpy[i]=f[i];
-    // fv3rd(f,v,dt,dx,nx,xoff);
-    // bc1d(f,nx,xoff,0);
-    // fv3rd(f,v,dt,dx,nx,xoff);
-    // for (i=0;i<nx;i++) f[i]=0.5*(f[i]+fcpy[i]);

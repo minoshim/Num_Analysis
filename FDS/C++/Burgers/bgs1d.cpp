@@ -1,3 +1,5 @@
+#include "bgs1d.hpp"
+
 void bgs_fd(double* f, double dt, double dx, int nx, int xoff)
 // Solve 1D Burgers equation using non-conservative finite-difference scheme
 // f = dependent variable
