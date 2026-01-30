@@ -14,9 +14,7 @@ int main(void)
   const double v=1.0;		// Velcity
   const double dt=fabs(CFL*dx/v); // Time step
   double t=0.0;
-  double *x,*f;
-  x=new double[nx]();
-  f=new double[nx]();
+  double x[nx],f[nx];
 
   // Initialize
   for (i=0;i<nx;i++){
@@ -37,6 +35,7 @@ int main(void)
     // ftcs(f,v,dt,dx,nx,xoff);
     upwd(f,v,dt,dx,nx,xoff);
     // lawe(f,v,dt,dx,nx,xoff);
+  
     t+=dt;
 
     // Output
@@ -48,3 +47,11 @@ int main(void)
   
   return 0;
 }
+
+    // // 2nd-order RK
+    // double fcpy[nx];
+    // for (i=0;i<nx;i++) fcpy[i]=f[i];
+    // fv3rd(f,v,dt,dx,nx,xoff);
+    // bc1d(f,nx,xoff,0);
+    // fv3rd(f,v,dt,dx,nx,xoff);
+    // for (i=0;i<nx;i++) f[i]=0.5*(f[i]+fcpy[i]);
