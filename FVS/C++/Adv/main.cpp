@@ -19,8 +19,8 @@ int main(void)
   // Initialize
   for (i=0;i<nx;i++){
     x[i]=(i+0.5-xoff)*dx-0.5*lx;
-    f[i]=(i > nx/4 && i < 3*nx/4)?1.0:0.0; // Square wave
-    // f[i]=exp(-(x[i]*x[i])/(16*dx*dx));	   // Gaussian
+    // f[i]=(i > nx/4 && i < 3*nx/4)?1.0:0.0; // Square wave
+    f[i]=exp(-(x[i]*x[i])/(16*dx*dx));	   // Gaussian
   }
 
   // Output

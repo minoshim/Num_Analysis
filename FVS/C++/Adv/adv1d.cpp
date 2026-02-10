@@ -30,7 +30,7 @@ void muscl(double* f, double v, double dt, double dx, int nx, int xoff)
   const double nu=v*dt/dx;
   const int sgnv=(v > 0)?1:-1;
   double flux[nx];
-  double (*msl_func)(double,double,double)=muscl_vl_cal_f;
+  double (*msl_func)(double,double,double)=muscl_mc_cal_f;
     
   for (i=2;i<nx-1;i++) flux[i]=0.5*(+(1+sgnv)*msl_func(f[i-2],f[i-1],f[i  ])
 				    +(1-sgnv)*msl_func(f[i+1],f[i  ],f[i-1]));
