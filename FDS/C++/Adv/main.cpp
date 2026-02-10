@@ -35,6 +35,7 @@ int main(void)
     // ftcs(f,v,dt,dx,nx,xoff);
     upwd(f,v,dt,dx,nx,xoff);
     // lawe(f,v,dt,dx,nx,xoff);
+    // sl3rd(f,v,dt,dx,nx,xoff);
   
     t+=dt;
 
