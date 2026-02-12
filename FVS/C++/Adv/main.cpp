@@ -35,6 +35,7 @@ int main(void)
 #if (1)
     // Conservative semi-Lagrangian
     csl3rd(f,v,dt,dx,nx,xoff);
+    // cslmsl(f,v,dt,dx,nx,xoff);
 #else
     // 2nd-order RK
     double fcpy[nx];
