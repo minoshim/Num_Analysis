@@ -68,7 +68,7 @@ void fv3rd(double* f, double v, double dt, double dx, int nx, int xoff)
 }
 
 void sl3rd(double* f, double v, double dt, double dx, int nx, int xoff)
-// Solve 1D advection equation using 3rd-order semi-Lagrange scheme (CFL< only)
+// Solve 1D advection equation using 3rd-order semi-Lagrange scheme (CFL<1 only)
 // f = dependent variable
 // v = advection velocity
 // dt, dx = time step and grid width

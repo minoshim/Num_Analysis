@@ -32,6 +32,10 @@ int main(void)
   // Integration
   while(n++ < nmax){
     bc1d(f,nx,xoff,0);
+#if (1)
+    // Conservative semi-Lagrangian
+    csl3rd(f,v,dt,dx,nx,xoff);
+#else
     // 2nd-order RK
     double fcpy[nx];
     for (i=0;i<nx;i++) fcpy[i]=f[i];
@@ -39,7 +43,8 @@ int main(void)
     bc1d(f,nx,xoff,0);
     muscl(f,v,dt,dx,nx,xoff);
     for (i=0;i<nx;i++) f[i]=0.5*(f[i]+fcpy[i]);
-  
+#endif
+
     t+=dt;
 
     // Output

@@ -36,3 +36,28 @@ void muscl(double* f, double v, double dt, double dx, int nx, int xoff)
 				    +(1-sgnv)*msl_func(f[i+1],f[i  ],f[i-1]));
   for (i=xoff;i<nx-xoff;i++) f[i]-=nu*(flux[i+1]-flux[i]);
 }
+
+void csl3rd(double* f, double v, double dt, double dx, int nx, int xoff)
+// Solve 1D advection equation using conservative semi-Lagrange scheme (CFL<1 only)
+// f = dependent variable
+// v = advection velocity
+// dt, dx = time step and grid width
+// nx, xoff = number of grid points (including boundary) and boundary grid
+// Note: nx-2*xoff corresponds to the number of grid points in computational domain
+{
+  int i;
+  const double nu=v*dt/dx;
+  const int sgnv=(v > 0)?1:-1;
+  double flux[nx];
+
+  for (i=2;i<nx-1;i++){
+    double c0[2]={(-f[i-2]+5*f[i-1]+2*f[i  ])/6.0,
+		  (-f[i+1]+5*f[i  ]+2*f[i-1])/6.0};
+    double c1[2]={f[i]-f[i-1],f[i]-f[i-1]};
+    double c2[2]={(f[i-2]-2*f[i-1]+f[i  ])*0.5,
+		  (f[i+1]-2*f[i  ]+f[i-1])*0.5};
+    flux[i]=0.5*(+(1+sgnv)*(c0[0]+nu*(-c1[0]*0.5+c2[0]*nu/3.0))
+		 +(1-sgnv)*(c0[1]+nu*(-c1[1]*0.5+c2[1]*nu/3.0)));
+  }
+  for (i=xoff;i<nx-xoff;i++) f[i]-=nu*(flux[i+1]-flux[i]);
+}
