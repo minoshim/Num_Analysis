@@ -7,6 +7,6 @@
 #define VMESH (64)		// Number of grids in V domain
 #define CFL (0.2)		// CFL number
 #define NREC (10)		// Number of steps per output
-#define NMAX (1000)		// Number of iterations
+#define NMAX (1280)		// Number of iterations
 
 #endif

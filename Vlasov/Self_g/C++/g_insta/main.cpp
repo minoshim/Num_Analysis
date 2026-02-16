@@ -13,11 +13,11 @@ int main(void)
   const int nd=nx*nv;
   const int nrec=NREC;
   const int nmax=NMAX;
-  const double lx=1.0;		// Domain size in X
-  const double lv=2.0;		// Domain size in V
+  const double lx=1.0;		// Domain size in X, [-lx/2,lx/2]
+  const double lv=1.0;		// Half domain size in V, [-lv,lv]
   const double dx=lx/XMESH;	// Grid spacing in X
-  const double dv=lv/VMESH; 	// Grid spacing in V
-  const double dt=fabs(CFL*dx/(0.5*lv)); // Time step
+  const double dv=2.0*lv/VMESH; 	// Grid spacing in V
+  const double dt=fabs(CFL*dx/lv); // Time step
   const double k0=2.0*M_PI/lx;		 // Fundamental wavenumber
   double t=0.0;
   double x[nx],v[nv];
@@ -36,11 +36,12 @@ int main(void)
     x[i]=(i+0.5-xoff)*dx-0.5*lx;
   }
   for (j=0;j<nv;j++){
-    v[j]=(j+0.5-voff)*dv-0.5*lv;
+    v[j]=(j+0.5-voff)*dv-lv;
   }
   for (j=0;j<nv;j++){
+    double ftmp=gaussian(v[j],0.0,vs);
     for (i=0;i<nx;i++){
-      f[nx*j+i]=gaussian(v[j],0.0,vs)*(1.0+amp*cos(kk*x[i]));
+      f[nx*j+i]=ftmp*(1.0+amp*cos(kk*x[i]));
     }
   }
 
@@ -63,14 +64,20 @@ int main(void)
     
     // Calculate field
     {
-      // Density fluctuation
-      for (i=0;i<nx;i++){
+      // Density fluctuation (integration and zero-mean)
+      double dmean=0.0;
+      for (i=xoff;i<nx-xoff;i++){
 	drho[i]=0.0;
 	for (j=voff;j<nv-voff;j++){
 	  drho[i]+=f[nx*j+i]*dv;
 	}
-	drho[i]-=1.0;
+	dmean+=drho[i]*dx;
       }
+      dmean/=lx;
+      for (i=xoff;i<nx-xoff;i++){
+	drho[i]-=dmean;
+      }
+
       // Gravity field (integration and zero-mean)
       g[xoff]=0.0;
       for (i=xoff+1;i<nx-xoff+1;i++){
