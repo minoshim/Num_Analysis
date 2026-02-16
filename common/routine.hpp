@@ -52,4 +52,10 @@ inline double rand_noise(const double *params, unsigned seed)
   return dist(engine);
 }
 
+inline double gaussian(double x, double x0, double xs)
+{
+  // Return gaussian distribution. Integration = 1
+  double dx=(x-x0)/xs;
+  return exp(-0.5*dx*dx)/(sqrt(2*M_PI)*xs);
+}
 #endif
