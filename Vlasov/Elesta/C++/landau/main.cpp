@@ -14,7 +14,7 @@ int main(void)
   const int nrec=NREC;
   const int nmax=NMAX;
   const double lx=4.0*M_PI;		// Domain size in X, [-lx/2,lx/2]
-  const double lv=4.5;		// Half domain size in V, [-lv,lv]
+  const double lv=5.0;		// Half domain size in V, [-lv,lv]
   const double dx=lx/XMESH;	// Grid spacing in X
   const double dv=2.0*lv/VMESH; 	// Grid spacing in V
   const double dt=fabs(CFL*dx/lv); // Time step
@@ -38,6 +38,7 @@ int main(void)
   }
   for (j=0;j<nv;j++){
     double ftmp=gaussian(v[j],0.0,1.0);
+    // double ftmp=(v[j]*v[j])*gaussian(v[j],0.0,1.0);
     for (i=0;i<nx;i++){
       f[nx*j+i]=ftmp*(1.0+amp*cos(kk*x[i]));
     }
