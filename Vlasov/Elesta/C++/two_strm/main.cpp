@@ -14,7 +14,7 @@ int main(void)
   const int nrec=NREC;
   const int nmax=NMAX;
   const double lx=4.0*M_PI;		// Domain size in X, [-lx/2,lx/2]
-  const double lv=4.5;		// Half domain size in V, [-lv,lv]
+  const double lv=5.0;		// Half domain size in V, [-lv,lv]
   const double dx=lx/XMESH;	// Grid spacing in X
   const double dv=2.0*lv/VMESH; 	// Grid spacing in V
   const double dt=fabs(CFL*dx/lv); // Time step
