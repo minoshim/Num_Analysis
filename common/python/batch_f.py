@@ -27,3 +27,8 @@ x=x[xoff:nx-xoff]
 v=v[voff:nv-voff]
 f=f[:,voff:nv-voff,xoff:nx-xoff]
 g=g[:,xoff:nx-xoff]
+
+# Total number, energy, and entropy
+num=f.sum(axis=(1,2))*dx*dv
+ene=0.5*((f*v[None,:,None]*v[None,:,None]).sum(axis=(1,2))+(g*g).sum(axis=1))*dx*dv
+ent=(f*(1-f)).sum(axis=(1,2))*dx*dv
