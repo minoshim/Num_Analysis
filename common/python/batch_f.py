@@ -28,6 +28,12 @@ v=v[voff:nv-voff]
 f=f[:,voff:nv-voff,xoff:nx-xoff]
 g=g[:,xoff:nx-xoff]
 
+# Potential
+p=np.zeros((nt,nx-2*xoff))
+for i in range(nx-2*xoff-1):
+    p[:,i+1]=p[:,i]-g[:,i+1]*dx
+p=p-p.mean(axis=1,keepdims=True)
+
 # Total number, energy, and entropy
 num=f.sum(axis=(1,2))*dx*dv
 ene=0.5*((f*v[None,:,None]*v[None,:,None]).sum(axis=(1,2))+(g*g).sum(axis=1))*dx*dv
