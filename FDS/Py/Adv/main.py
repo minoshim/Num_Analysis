@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # User-set parameters
-## Spartial grid
+## Spatial grid
 xoff=2
 xmesh=100
 nx=xmesh+2*xoff
@@ -36,16 +36,16 @@ def bc1d(f,xoff,dnx=0):         # Boundary condition
         f[nx - xoff:] = f[xoff : 2*xoff]
     elif abs(dnx) == 1:
         f[:xoff] = dnx * f[xoff : 2*xoff][::-1]
-        f[nx - xoff:] = dnx * f[nx - 2*xoff : nx - xoff][::-1]    
-
-def ftcs(f,v,dt,dx,xoff):       # FTCS scheme
+        f[nx - xoff:] = dnx * f[nx - 2*xoff : nx - xoff][::-1]
+        
+def ftcs(f,v,dt,dx,xoff=1):       # FTCS scheme
     nx=len(f)
     nu=v*dt/dx
     df=np.zeros_like(f)
     df[1:-1]=0.5*(f[2:]-f[:-2])
     f[xoff:nx-xoff]-=nu*df[xoff:nx-xoff]
 
-def upwd(f,v,dt,dx,xoff):       # Upwind scheme
+def upwd(f,v,dt,dx,xoff=1):       # Upwind scheme
     nx=len(f)
     nu=v*dt/dx
     sgnv=1 if (v > 0) else -1
