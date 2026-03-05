@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 xoff=2
 voff=2
 xmesh=64
-vmesh=68
+vmesh=64
 nx=xmesh+2*xoff
 nv=vmesh+2*voff
 ## Domain size and CFL number
