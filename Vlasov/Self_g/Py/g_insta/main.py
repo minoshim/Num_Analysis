@@ -94,9 +94,7 @@ def pushv(f,g,dt,dv,xoff=2,voff=2):
         csl3rd(ftmp, 0.5*(g[i]+g[i+1]), dt, dv, voff)
         f[voff:nv-voff, i] = ftmp[voff:nv-voff]
     
-def main():
-    init(x,v,f)
-    t=0.0
+def main(t,tmax):
     while(t < tmax):
         # Advection in X (half)
         pushx(f,v,0.5*dt,dx,xoff,voff)
@@ -120,7 +118,9 @@ def main():
         pushx(f,v,0.5*dt,dx,xoff,voff)
             
         t+=dt
-    print(f"Simulation end at t = {t:.6f}")
+    return t
     
 if __name__ == "__main__":
-    main()
+    init(x,v,f)
+    t=main(0,tmax)
+    print(f"Simulation end at t = {t:.6f}")
