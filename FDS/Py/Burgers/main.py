@@ -50,6 +50,7 @@ def bgs_fv(f,dt,dx,xoff=1):
     dtdx=dt/dx
     flux=np.zeros_like(f)
     flux[1:]=np.where((f[:-1]+f[1:]) > 0,0.5*f[:-1]**2,0.5*f[1:]**2)
+    flux[1:]=np.where((f[:-1] < 0) & (f[1:] > 0), 0, flux[1:]) # Correction for expansion wave
     f[xoff:nx-xoff]-=dtdx*(flux[xoff+1:nx-xoff+1]-flux[xoff:nx-xoff])
     
 def main(t,tmax):

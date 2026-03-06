@@ -34,6 +34,7 @@ void bgs_fv(double* f, double dt, double dx, int nx, int xoff)
   for (i=1;i<nx-1;i++){
     sgnv=((f[i-1]+f[i]) > 0)?1:-1;
     flux[i]=0.25*((1+sgnv)*(f[i-1]*f[i-1])+(1-sgnv)*(f[i]*f[i]));
+    flux[i]*=((f[i-1] < 0)&&(f[i] > 0))?0:1; // Correction for expansion wave
   }
   for (i=xoff;i<nx-xoff;i++) f[i]-=dtdx*(flux[i+1]-flux[i]);
 }
