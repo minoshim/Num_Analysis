@@ -40,9 +40,9 @@ int main(void)
     // 2nd-order RK
     double fcpy[nx];
     for (i=0;i<nx;i++) fcpy[i]=f[i];
-    muscl(f,v,dt,dx,nx,xoff);
+    fv3rd(f,v,dt,dx,nx,xoff);
     bc1d(f,nx,xoff,0);
-    muscl(f,v,dt,dx,nx,xoff);
+    fv3rd(f,v,dt,dx,nx,xoff);
     for (i=0;i<nx;i++) f[i]=0.5*(f[i]+fcpy[i]);
 #endif
 
