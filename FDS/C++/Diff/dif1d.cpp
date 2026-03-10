@@ -36,6 +36,8 @@ void dif1di(double* f, double kx, double dt, double dx, int nx, int xoff,
     a[i]=-add;
     b[i]=1.0+2.0*add;
     c[i]=-add;
+  }
+  for (i=1;i<nx-1;i++){
     d[i]=(1.0-2.0*bdd)*f[i]+bdd*(f[i+1]+f[i-1]);
   }
   trdiag(f,a,b,c,d,nx,xoff);
@@ -44,17 +46,17 @@ void dif1di(double* f, double kx, double dt, double dx, int nx, int xoff,
 void trdiag(double* s,
 	    const double* a, const double* b, const double* c, const double* d,
 	    int nx, int xoff)
-// Solve a[i]*s[i+1]+b[i]*s[i]+c[i]*s[i-1]=d[i] using Thomas method
+// Solve a[i]*s[i-1]+b[i]*s[i]+c[i]*s[i+1]=d[i] using Thomas method
 {
   int i;
   double bet,gam[nx];
 
-  bet=b[0];
-  s[0]=d[0]/bet;
-  for (i=1;i<nx;i++){
-    gam[i]=a[i-1]/bet;
-    bet=b[i]-c[i]*gam[i];
-    s[i]=(d[i]-c[i]*s[i-1])/bet;
+  bet=b[xoff];
+  s[xoff]=d[xoff]/bet;
+  for (i=xoff+1;i<nx-xoff;i++){
+    gam[i]=c[i-1]/bet;
+    bet=b[i]-a[i]*gam[i];
+    s[i]=(d[i]-a[i]*s[i-1])/bet;
   }
-  for (i=nx-xoff;i>xoff;i--) s[i-1]-=gam[i]*s[i];
+  for (i=nx-xoff-2;i>=xoff;i--) s[i]-=gam[i+1]*s[i+1];
 }

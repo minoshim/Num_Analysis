@@ -52,11 +52,11 @@ def dif1di(f,kx,dt,dx,xoff,alpha=1.0):    # Implicit scheme for diffusion
     bdd=(1.0-alpha)*dd
     ab=np.zeros((3,nx))
     d=np.zeros(nx)
-    ab[0,1:]=-add
-    ab[1,:]=1.0+2.0*add
-    ab[2,:-1]=-add
+    ab[0,1:]=-add #upper diagonal
+    ab[1,:]=1.0+2.0*add #main diagonal
+    ab[2,:-1]=-add #lower diagonal
     d[1:-1]=(1.0-2.0*bdd)*f[1:-1]+bdd*(f[2:]+f[:-2])
-    f[:]=solve_banded((1,1),ab,d)
+    f[xoff:nx-xoff]=solve_banded((1,1),ab[:,xoff:nx-xoff],d[xoff:nx-xoff])
     
 def main(t,tmax):
     while(t < tmax):
