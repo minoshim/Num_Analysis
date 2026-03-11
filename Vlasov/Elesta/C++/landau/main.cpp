@@ -26,9 +26,11 @@ int main(void)
   double* f=new double[nd]();
 
   // Simulation paramters
-  const double amp=0.01;	// Perturbation amplitude
+  const double amp=0.05;	// Perturbation amplitude
   const double kk=0.5;	// Perturbation wavenumber
-
+  const double vd=1.5;	// Drift velocity for two-stream instability
+  const double vs=0.5;	// Thermal velocity for two-stream instability
+  
   // Initialize
   for (i=0;i<nx;i++){
     x[i]=(i+0.5-xoff)*dx-0.5*lx;
@@ -37,8 +39,8 @@ int main(void)
     v[j]=(j+0.5-voff)*dv-lv;
   }
   for (j=0;j<nv;j++){
-    double ftmp=gaussian(v[j],0.0,1.0);
-    // double ftmp=(v[j]*v[j])*gaussian(v[j],0.0,1.0);
+    // double ftmp=gaussian(v[j],0.0,1.0);
+    double ftmp=0.5*(gaussian(v[j],+vd,vs)+gaussian(v[j],-vd,vs));
     for (i=0;i<nx;i++){
       f[nx*j+i]=ftmp*(1.0+amp*cos(kk*x[i]));
     }
