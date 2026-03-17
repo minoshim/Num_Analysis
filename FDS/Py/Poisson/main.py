@@ -37,6 +37,9 @@ def init(x,y,f,rhs):                   # Initialize
     y[:]=(j+0.5-yoff)*dy-0.5*ly
     f[:,:]=0
     rhs[:,:]=np.sin(2*x[None,:])*np.sin(3*y[:,None]) # Right hand side
+    # Test for random source term
+    #rng=np.random.default_rng()
+    #rhs[:,:]=rng.random((ny,nx))-0.5 #[-0.5,0.5]
     
 def bc2d(f,xoff,yoff,dnx=0,dny=0): # Boundary condition
     # f : shape (ny,nx)
