@@ -60,7 +60,7 @@ def bc1d(f,xoff,dnx=0):         # Boundary condition
     if dnx == 0:
         f[:xoff] = f[nx - 2*xoff : nx - xoff]
         f[nx - xoff:] = f[xoff : 2*xoff]
-    elif abs(dnx) == 1:
+    elif dnx is not None and abs(dnx) == 1:
         f[:xoff] = dnx * f[xoff : 2*xoff][::-1]
         f[nx - xoff:] = dnx * f[nx - 2*xoff : nx - xoff][::-1]
 
@@ -72,14 +72,14 @@ def bc2d(f,xoff,yoff,dnx=0,dny=0): # Boundary condition
     if dnx == 0:
         f[:, :xoff]      = f[:, nx-2*xoff:nx-xoff]
         f[:, nx-xoff:]   = f[:, xoff:2*xoff]
-    elif abs(dnx) == 1:
+    elif dnx is not None and abs(dnx) == 1:
         f[:, :xoff] = dnx * f[:, xoff:2*xoff][:, ::-1] # Left
         f[:, nx-xoff:] = dnx * f[:, nx-2*xoff:nx-xoff][:, ::-1] # Right
     # ---- y direction ----
     if dny == 0:
         f[:yoff, :]      = f[ny-2*yoff:ny-yoff, :]
         f[ny-yoff:, :]   = f[yoff:2*yoff, :]
-    elif abs(dny) == 1:
+    elif dny is not None and abs(dny) == 1:
         f[:yoff, :] = dny * f[yoff:2*yoff, :][::-1, :] # Bottom
         f[ny-yoff:, :] = dny * f[ny-2*yoff:ny-yoff, :][::-1, :] # Top
 
@@ -178,7 +178,7 @@ def dcsl1d(f,v,w,dt,dx,xoff=2,alpha=1.0):
     f[xoff:-xoff]+=solve_banded((2,2),ab[:,xoff:-xoff],rr[xoff:-xoff])
     
 def pushx(f,v,dt,dx,xoff=2,voff=2):
-    bc2d(f,xoff,voff,0,999) # Periodic in X, nothing to do in V
+    bc2d(f,xoff,voff,0,None) # Periodic in X, nothing to do in V
     for fi,vi in zip(f[voff:-voff,:],v[voff:-voff]):
         cslmsl(fi,vi,dt,dx,xoff)
 
