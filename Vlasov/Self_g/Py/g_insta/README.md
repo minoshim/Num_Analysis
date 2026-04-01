@@ -9,20 +9,17 @@ This notebook solves the **1D self-gravitating Vlasov–Poisson system** using a
 
 ## 📌 Overview
 
-We solve the Vlasov equation:
+We solve the Vlasov equation for the phase space distiribution f(x,v):
 
-\[
-\frac{\partial f}{\partial t}
-+ v \frac{\partial f}{\partial x}
-- g(x,t) \frac{\partial f}{\partial v} = 0
-\]
+df/dt + vdf/dx -gdf/dv = 0,
 
-with the self-consistent gravitational field:
+with the self-consistent gravitational field g(x):
 
-\[
-\frac{\partial g}{\partial x} = -4\pi (\rho - \bar{\rho}), \quad
-\rho(x,t) = \int f(x,v,t)\, dv
-\]
+dg/dx = -4 pi (rho - rho_0), 
+
+where
+  - rho: number density (integration of f in velocity space)
+  - rho_0: mean number density
 
 ---
 
@@ -34,8 +31,8 @@ with the self-consistent gravitational field:
   - Half step: advection in \(x\)
 
 - **Advection scheme**:
-  - 3rd-order conservative semi-Lagrangian (CSL3rd)
-  - CSL3rd + MUSCL-type reconstruction with limiter (CSLMSL)
+  - 3rd-order conservative semi-Lagrangian (CSL3rd), or
+  - CSL3rd + MUSCL-type flux limiter (CSLMSL)
 
 - **Boundary conditions**:
   - Periodic in \(x\)
@@ -69,11 +66,9 @@ Total grid:
 
 ### Initial Condition
 
-Maxwellian in velocity with sinusoidal perturbation in space:
+Maxwellian f_v(v) in velocity with sinusoidal perturbation in space:
 
-\[
-f(x,v,0) = f_v(v)\left[1 + A \cos(kx)\right]
-\]
+f(x,v,0) = f_v(v) [1 + A cos(kx)]
 
 - `amp`: perturbation amplitude
 - `kk`: perturbation wavenumber
@@ -81,16 +76,9 @@ f(x,v,0) = f_v(v)\left[1 + A \cos(kx)\right]
 
 ---
 
-### Time Step
-
-\[
-dt = \text{CFL} \cdot \frac{dx}{v_{\max}}
-\]
-
----
 
 ## 🚀 How to Run
 
-1. Open the notebook in Colab
+1. Open the notebook in Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/minoshim/Num_Analysis/blob/main/Vlasov/Self_g/Py/g_insta/g_insta.ipynb)
 2. Modify parameters at the top:
 3. Run all cells
