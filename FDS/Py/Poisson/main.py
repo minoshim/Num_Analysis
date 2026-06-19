@@ -16,6 +16,7 @@ ly=2.0*np.pi
 eps=1e-6           # Threshold for convergence
 itmax=8192         # maximum number of iterations
 omegaj=2.0/3.0      # Factor in weighted Jacobi method (def. = 2.0/3.0)
+omegag=1.0          # Factor in Gauss-Seidel/SOR method (def. = 1.0)
 
 # Grid width
 dx=lx/xmesh
@@ -111,8 +112,58 @@ def poi2d_ja(f,rhs,dx,dy,xoff,yoff,dnx=0,dny=0,eps=1e-6,itmax=128,omega=2.0/3.0)
 
     return np.sqrt(anorm/anormf)
 
+def poi2d_gs(f,rhs,dx,dy,xoff,yoff,dnx=0,dny=0,eps=1e-6,itmax=128,omega=1.0):
+    # Solve 2D poisson equation d2f/dx2 + d2f/dy2 = -rhs
+    # Red-black Gauss-Seidel method
+    # f, rhs : shape (ny,nx)
+
+    ny,nx=f.shape
+    eps2 = eps*eps
+    dx2 = dx*dx
+    dy2 = dy*dy
+    dxdy2 = dx2*dy2
+    denom = 1.0/(2.0*(dx2+dy2))
+
+    # Boundary condition
+    bc2d(f,xoff,yoff,dnx,dny)
+
+    resid=dxdy2*rhs[yoff:ny-yoff,xoff:nx-xoff]*denom
+    anormf=np.sum(resid*resid)
+    if anormf <= eps2:
+        anormf = eps2
+
+    jj,ii=np.indices((ny-2*yoff,nx-2*xoff))
+    red=(ii+jj) % 2 == 0
+    black=~red
+    fs=np.s_[yoff:ny-yoff,xoff:nx-xoff]
+    fm=np.s_[yoff:ny-yoff,xoff-1:nx-xoff-1]
+    fp=np.s_[yoff:ny-yoff,xoff+1:nx-xoff+1]
+    gm=np.s_[yoff-1:ny-yoff-1,xoff:nx-xoff]
+    gp=np.s_[yoff+1:ny-yoff+1,xoff:nx-xoff]
+    fcore=f[fs]
+
+    cnt=0
+    while (cnt < itmax):
+        anorm = 0.0
+        for mask in (red,black):
+            resid = (+dy2*(f[fm]+f[fp])
+                     +dx2*(f[gm]+f[gp])
+                     +dxdy2*rhs[fs])*denom-f[fs]
+            resid *= omega
+            anorm += np.sum(resid[mask]**2)
+            fcore[mask] += resid[mask]
+
+        # boundary condition
+        bc2d(f,xoff,yoff,dnx,dny)
+
+        cnt += 1
+        if (anorm < eps2*anormf):
+            break
+
+    return np.sqrt(anorm/anormf)
+
 if __name__ == "__main__":
     init(x,y,f,rhs)
-    poi2d_ja(f,rhs,dx,dy,xoff,yoff,0,0,eps,itmax,omegaj)
+    poi2d_gs(f,rhs,dx,dy,xoff,yoff,0,0,eps,itmax,omegag)
     d2f=lap2d(f,dx,dy)          # Left hand side
     err[yoff:-yoff,xoff:-xoff]=(d2f+rhs)[yoff:-yoff,xoff:-xoff]
