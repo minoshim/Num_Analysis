@@ -71,7 +71,7 @@ Do not change input/output file formats unless explicitly requested.
 
 Do not introduce external dependencies without asking first.
 
-Do not change compiler flags, OpenMP settings, MPI settings, floating-point precision, or optimization flags without explaining the reason and risk.
+Do not change compiler flags, floating-point precision, or optimization flags without explaining the reason and risk.
 
 Prefer explaining the plan before editing when the task affects core numerical routines.
 
@@ -80,7 +80,7 @@ Prefer explaining the plan before editing when the task affects core numerical r
 Before submitting C++ changes, run `make clean && make` in the affected task
 directory. If shared code changes, also run `make` in `common` and rebuild at
 least one representative task. For Python changes, run the affected `main.py`
-and check that the expected plot appears without exceptions.
+and check that the expected calculation or plot completes without exceptions.
 
 ## Done when
 
@@ -95,5 +95,5 @@ Any numerical, performance, or compatibility risks are explicitly noted.
 Recent commits use short imperative summaries, for example `update Makefile by
 codex` or `add poi2d_gs by codex`. Keep commit messages concise and mention the
 affected component. Pull requests should describe the numerical problem touched,
-the commands run for verification, and any expected output changes such as new
-`.dat` files or figures.
+the commands run for verification, and any changes in generated `.dat` outputs
+or figures.
