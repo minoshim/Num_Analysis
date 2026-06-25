@@ -6,6 +6,7 @@ void muscl(double* f, double v, double dt, double dx, int nx, int xoff=2);
 void csl3rd(double* f, double v, double dt, double dx, int nx, int xoff=2);
 void cslmsl(double* f, double v, double dt, double dx, int nx, int xoff=2);
 void pfc(double* f, double v, double dt, double dx, int nx, int xoff=2);
+void wpfc(double* f, double v, double dt, double dx, int nx, int xoff=3);
 
 inline double max(double a, double b)
 {
