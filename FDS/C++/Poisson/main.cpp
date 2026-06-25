@@ -4,7 +4,7 @@
 
 int main(void)
 {
-  int i,j,n;
+  int i,j,n=0;
   const int xoff=XOFF;
   const int yoff=YOFF;
   const int offs[]={xoff,yoff};

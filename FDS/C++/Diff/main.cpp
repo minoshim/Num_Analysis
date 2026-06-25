@@ -4,7 +4,7 @@
 
 int main(void)
 {
-  int i,n;
+  int i,n=0;
   const int xoff=XOFF;
   const int nx=XMESH+2*xoff;
   const int nrec=NREC;
