@@ -59,11 +59,7 @@ Implement the simplest meaningful version first:
 * uniform grid
 * periodic boundary condition, unless the paper requires another condition
 * constant advection velocity
-* one or two standard initial conditions, such as:
-
-  * Gaussian pulse
-  * square wave
-  * sine wave
+* use existing initial conditions in the repository
 * output format consistent with existing examples in the repository
 
 Do not implement multi-dimensional extensions, nonlinear systems, AMR, complicated boundary conditions, or performance optimizations unless explicitly requested later.
@@ -95,6 +91,7 @@ Do not edit files until this analysis is complete.
 * Do not introduce external dependencies.
 * Do not change file formats used by existing examples unless explicitly requested.
 * Preserve the educational style of the repository.
+* Do not delete existing comments.
 
 ## Numerical implementation requirements
 
@@ -136,7 +133,7 @@ Then return to the new example directory and build it.
 
 The verification should include at least one of the following:
 
-1. periodic advection of a smooth profile over one period;
+1. periodic advection of a profile over one period;
 2. comparison between initial and final profiles after one full advection cycle;
 3. qualitative comparison against an existing solver in the repository;
 4. convergence check if easy to add.
@@ -165,7 +162,7 @@ The task is done when:
 
 ## First Codex instruction
 
-Start by reading this file, the repository README, the existing advection examples, and the paper in `references/`.
+Start by reading this file, the repository README and AGENTS, the existing advection examples, and the paper in `references/`.
 
 Then produce an implementation plan.
 
