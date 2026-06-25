@@ -7,35 +7,38 @@ static double median3(double a, double b, double c)
   return max(low,min(a,high));
 }
 
-static double pfc_poly(double f0, double a1, double a2, double x)
-{
-  return f0-a2/12.0+a1*x+a2*x*x;
-}
-
 static double pfc_flux(double f0, double a1, double a2, double xi, int sgnv)
 {
+  const double c0=f0-a2/12.0;
   if (sgnv > 0){
-    return xi*(pfc_poly(f0,a1,a2,0.5)
-	       +4.0*pfc_poly(f0,a1,a2,0.5*(1.0-xi))
-	       +pfc_poly(f0,a1,a2,0.5-xi))/6.0;
+    const double xm=0.5*(1.0-xi);
+    const double xl=0.5-xi;
+    return (c0+0.5*a1+0.25*a2
+	    +4.0*(c0+a1*xm+a2*xm*xm)
+	    +c0+a1*xl+a2*xl*xl)/6.0;
   } else{
-    return xi*(pfc_poly(f0,a1,a2,-0.5)
-	       +4.0*pfc_poly(f0,a1,a2,-0.5*(1.0-xi))
-	       +pfc_poly(f0,a1,a2,-0.5+xi))/6.0;
+    const double xm=-0.5*(1.0-xi);
+    const double xr=-0.5+xi;
+    return (c0-0.5*a1+0.25*a2
+	    +4.0*(c0+a1*xm+a2*xm*xm)
+	    +c0+a1*xr+a2*xr*xr)/6.0;
   }
 }
 
 static void pfc_coef(double* f, int i, double& a1, double& a2)
 {
-  const double fmax=max(max(f[i-1],f[i+1]),min(2.0*f[i]-f[i-1],2.0*f[i]-f[i+1]));
-  const double fmin=max(0.0,min(min(f[i-1],f[i+1]),max(2.0*f[i]-f[i-1],2.0*f[i]-f[i+1])));
+  const double fm=f[i-1];
+  const double f0=f[i];
+  const double fp=f[i+1];
+  const double fmax=max(max(fm,fp),min(2.0*f0-fm,2.0*f0-fp));
+  const double fmin=max(0.0,min(min(fm,fp),max(2.0*f0-fm,2.0*f0-fp)));
   const double alpha=1.0/3.0;
-  double ap=f[i+1]-f[i];
-  double am=f[i]-f[i-1];
-  const double fpmin=3.0*max(2.0*(f[i]-fmax),fmin-f[i]);
-  const double fpmax=3.0*min(2.0*(f[i]-fmin),fmax-f[i]);
-  const double fmmin=3.0*max(2.0*(fmin-f[i]),f[i]-fmax);
-  const double fmmax=3.0*min(2.0*(fmax-f[i]),f[i]-fmin);
+  double ap=fp-f0;
+  double am=f0-fm;
+  const double fpmin=3.0*max(2.0*(f0-fmax),fmin-f0);
+  const double fpmax=3.0*min(2.0*(f0-fmin),fmax-f0);
+  const double fmmin=-fpmax;
+  const double fmmax=-fpmin;
 
   ap=median3(ap,alpha*fpmin,alpha*fpmax);
   am=median3(am,alpha*fmmin,alpha*fmmax);
@@ -152,9 +155,9 @@ void pfc(double* f, double v, double dt, double dx, int nx, int xoff)
 
   for (i=2;i<nx-1;i++){
     double a1,a2;
-    int ic=(sgnv > 0)?i-1:i;
+    int ic=i-(1+sgnv)/2;
     pfc_coef(f,ic,a1,a2);
-    flux[i]=pfc_flux(f[ic],a1,a2,anu,sgnv)/anu;
+    flux[i]=pfc_flux(f[ic],a1,a2,anu,sgnv);
   }
   for (i=xoff;i<nx-xoff;i++) f[i]-=nu*(flux[i+1]-flux[i]);
 }
