@@ -47,30 +47,38 @@ static void pfc_coef(double* f, int i, double& a1, double& a2)
   a2=0.5*(ap-am);
 }
 
+static double pfc_dl2(double a1, double a2)
+{
+  return a1*a1/12.0+a2*a2/180.0;
+}
+
 static void pfc_bounds(double* f, int i, double& fmin, double& fmax)
 {
   const double r=2.0/3.0;
-  const double fml=f[i-1]+r*(f[i-1]-f[i-2])+(1.0-r)*(f[i]-f[i-1]);
-  const double fmr=f[i]+r*(f[i]-f[i+1])+(1.0-r)*(f[i-1]-f[i]);
-  const double fpl=f[i]+r*(f[i]-f[i-1])+(1.0-r)*(f[i+1]-f[i]);
-  const double fpr=f[i+1]+r*(f[i+1]-f[i+2])+(1.0-r)*(f[i]-f[i+1]);
-  const double fmmax=max(max(f[i-1],f[i]),min(fml,fmr));
-  const double fmmin=min(min(f[i-1],f[i]),max(fml,fmr));
-  const double fpmax=max(max(f[i],f[i+1]),min(fpl,fpr));
-  const double fpmin=min(min(f[i],f[i+1]),max(fpl,fpr));
+  const double fmm=f[i-2];
+  const double fm=f[i-1];
+  const double f0=f[i];
+  const double fp=f[i+1];
+  const double fpp=f[i+2];
+  const double fml=fm+r*(fm-fmm)+(1.0-r)*(f0-fm);
+  const double fmr=f0+r*(f0-fp)+(1.0-r)*(fm-f0);
+  const double fpl=f0+r*(f0-fm)+(1.0-r)*(fp-f0);
+  const double fpr=fp+r*(fp-fpp)+(1.0-r)*(f0-fp);
+  const double fmmax=max(max(fm,f0),min(fml,fmr));
+  const double fmmin=min(min(fm,f0),max(fml,fmr));
+  const double fpmax=max(max(f0,fp),min(fpl,fpr));
+  const double fpmin=min(min(f0,fp),max(fpl,fpr));
 
   fmax=max(fmmax,fpmax);
   fmin=max(0.0,min(fmmin,fpmin));
 }
 
-static void pfc_correct_coef(double f0, double fmin, double fmax,
+static void pfc_correct_coef(double fpmin, double fpmax,
 			     double a1o, double a2o, double& a1, double& a2)
 {
   const double eps=1e-7;
   double ap=a1o+a2o;
   double am=a1o-a2o;
-  const double fpmin=3.0*max(2.0*(f0-fmax),fmin-f0);
-  const double fpmax=3.0*min(2.0*(f0-fmin),fmax-f0);
   const double fmmin=-fpmax;
   const double fmmax=-fpmin;
   double bp=(ap > 0.0)?ap/(fpmax+eps):ap/(fpmin-eps);
@@ -92,19 +100,27 @@ static void wpfc_coef(double* f, int i, double xi, int sgnv, double& a1, double&
   const double eps=1e-7;
   const double cwpfc=0.5;
   double fmin,fmax;
-  double a1o[3],a2o[3],a1c[3],a2c[3],d[3],gm[3],w[3];
+  double a1o[3],a2o[3],a1c[3],a2c[3],d[3],gm[3];
+  const double fmm=f[i-2];
+  const double fm=f[i-1];
+  const double f0=f[i];
+  const double fp=f[i+1];
+  const double fpp=f[i+2];
 
   pfc_bounds(f,i,fmin,fmax);
 
-  a1o[0]=(3.0*f[i]-4.0*f[i-1]+f[i-2])*0.5;
-  a2o[0]=(f[i]-2.0*f[i-1]+f[i-2])*0.5;
-  a1o[1]=(f[i+1]-f[i-1])*0.5;
-  a2o[1]=(f[i+1]-2.0*f[i]+f[i-1])*0.5;
-  a1o[2]=(-f[i+2]+4.0*f[i+1]-3.0*f[i])*0.5;
-  a2o[2]=(f[i+2]-2.0*f[i+1]+f[i])*0.5;
+  a1o[0]=(3.0*f0-4.0*fm+fmm)*0.5;
+  a2o[0]=(f0-2.0*fm+fmm)*0.5;
+  a1o[1]=(fp-fm)*0.5;
+  a2o[1]=(fp-2.0*f0+fm)*0.5;
+  a1o[2]=(-fpp+4.0*fp-3.0*f0)*0.5;
+  a2o[2]=(fpp-2.0*fp+f0)*0.5;
+
+  const double fpmin=3.0*max(2.0*(f0-fmax),fmin-f0);
+  const double fpmax=3.0*min(2.0*(f0-fmin),fmax-f0);
 
   for (int k=0;k<3;k++){
-    pfc_correct_coef(f[i],fmin,fmax,a1o[k],a2o[k],a1c[k],a2c[k]);
+    pfc_correct_coef(fpmin,fpmax,a1o[k],a2o[k],a1c[k],a2c[k]);
   }
 
   d[1-sgnv]=(2.0+3.0*xi+xi*xi)/20.0;
@@ -120,7 +136,7 @@ static void wpfc_coef(double* f, int i, double xi, int sgnv, double& a1, double&
   double gsum=0.0;
 
   for (int k=0;k<3;k++){
-    const double dl2k=a1c[k]*a1c[k]/12.0+a2c[k]*a2c[k]/180.0;
+    const double dl2k=pfc_dl2(a1c[k],a2c[k]);
     gm[k]=d[k]*(cwpfc+sqrt((dl2k+eps)/(dl2+eps)));
     gsum+=gm[k];
   }
@@ -128,9 +144,9 @@ static void wpfc_coef(double* f, int i, double xi, int sgnv, double& a1, double&
   a1=0.0;
   a2=0.0;
   for (int k=0;k<3;k++){
-    w[k]=gm[k]/gsum;
-    a1+=w[k]*a1c[k];
-    a2+=w[k]*a2c[k];
+    const double w=gm[k]/gsum;
+    a1+=w*a1c[k];
+    a2+=w*a2c[k];
   }
 }
 
