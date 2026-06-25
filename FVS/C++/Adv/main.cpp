@@ -4,7 +4,7 @@
 
 int main(void)
 {
-  int i,n;
+  int i,n=0;
   const int xoff=XOFF;
   const int nx=XMESH+2*xoff;
   const int nrec=NREC;
@@ -34,8 +34,9 @@ int main(void)
     bc1d(f,nx,xoff,0);
 #if (1)
     // Conservative semi-Lagrangian
-    csl3rd(f,v,dt,dx,nx,xoff);
+    // csl3rd(f,v,dt,dx,nx,xoff);
     // cslmsl(f,v,dt,dx,nx,xoff);
+    pfc(f,v,dt,dx,nx,xoff);
 #else
     // 2nd-order RK
     double fcpy[nx];
