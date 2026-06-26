@@ -41,6 +41,9 @@ def bc1d(f,xoff,dnx=0):         # Boundary condition
 def minmod(a,b):
     return np.where(a*b < 0, 0, np.where(np.abs(a) < np.abs(b), a, b))
 
+def minmod3(a,b,c):
+    return minmod(minmod(a,b),c)
+
 def median3(a,b,c):
     return np.maximum(np.minimum(b,c),np.minimum(a,np.maximum(b,c)))
 
@@ -77,6 +80,22 @@ def csl3rd(f,v,dt,dx,xoff=2):       # 3rd-order conservative semi-Lagrangian sch
     ftr=c0r+nu*(-c1*0.5+c2r*nu/3.0)
     flux[2:-1]=0.5*((1+sgnv)*ftl+(1-sgnv)*ftr)
     f[xoff:nx-xoff]-=nu*(flux[xoff+1:nx-xoff+1]-flux[xoff:nx-xoff])    
+
+def cslmsl(f,v,dt,dx,xoff=2):       # conservative semi-Lagrangian-MUSCL scheme
+    nx=len(f)
+    nu=v*dt/dx
+    sgnv=np.sign(v)
+    flux=np.zeros_like(f)
+    c0l=(-f[0:-3]+5*f[1:-2]+2*f[2:-1])/6.0
+    c0r=(-f[3:  ]+5*f[2:-1]+2*f[1:-2])/6.0
+    c1 =f[2:-1]-f[1:-2]
+    c2l=(f[0:-3]-2*f[1:-2]+f[2:-1])*0.5
+    c2r=(f[3:  ]-2*f[2:-1]+f[1:-2])*0.5
+    ftl=c0l+nu*(-c1*0.5+c2l*nu/3.0)
+    ftr=c0r+nu*(-c1*0.5+c2r*nu/3.0)
+    flux[2:-1]=0.5*((1+sgnv)*(f[1:-2]+minmod3(f[1:-2]-f[0:-3],f[2:-1]-f[1:-2],ftl-f[1:-2]))
+                    +(1-sgnv)*(f[2:-1]-minmod3(f[2:-1]-f[1:-2],f[3:  ]-f[2:-1],f[2:-1]-ftr)))
+    f[xoff:nx-xoff]-=nu*(flux[xoff+1:nx-xoff+1]-flux[xoff:nx-xoff])
 
 def pfc_flux(f0,a1,a2,xi,sgnv):
     c0=f0-a2/12.0
@@ -133,7 +152,8 @@ def main(t,tmax):
     while(t < tmax):
         bc1d(f,xoff,0)
         if (1):                 # 1 for SL scheme, 0 for FV-RK2 scheme
-            csl3rd(f,v,dt,dx,xoff)
+            #csl3rd(f,v,dt,dx,xoff)
+            cslmsl(f,v,dt,dx,xoff)
             # pfc(f,v,dt,dx,xoff)
         else :
             fcpy=f.copy()
