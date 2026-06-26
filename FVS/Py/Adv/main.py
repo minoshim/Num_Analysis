@@ -41,6 +41,9 @@ def bc1d(f,xoff,dnx=0):         # Boundary condition
 def minmod(a,b):
     return np.where(a*b < 0, 0, np.where(np.abs(a) < np.abs(b), a, b))
 
+def median3(a,b,c):
+    return np.maximum(np.minimum(b,c),np.minimum(a,np.maximum(b,c)))
+
 def musclmm(f,v,dt,dx,xoff=2):
     nx=len(f)
     nu=v*dt/dx
@@ -74,13 +77,64 @@ def csl3rd(f,v,dt,dx,xoff=2):       # 3rd-order conservative semi-Lagrangian sch
     ftr=c0r+nu*(-c1*0.5+c2r*nu/3.0)
     flux[2:-1]=0.5*((1+sgnv)*ftl+(1-sgnv)*ftr)
     f[xoff:nx-xoff]-=nu*(flux[xoff+1:nx-xoff+1]-flux[xoff:nx-xoff])    
+
+def pfc_flux(f0,a1,a2,xi,sgnv):
+    c0=f0-a2/12.0
+    if sgnv > 0:
+        xm=0.5*(1.0-xi)
+        xl=0.5-xi
+        return (c0+0.5*a1+0.25*a2
+                +4.0*(c0+a1*xm+a2*xm*xm)
+                +c0+a1*xl+a2*xl*xl)/6.0
+    xm=-0.5*(1.0-xi)
+    xr=-0.5+xi
+    return (c0-0.5*a1+0.25*a2
+            +4.0*(c0+a1*xm+a2*xm*xm)
+            +c0+a1*xr+a2*xr*xr)/6.0
+
+def pfc_coef(fm,f0,fp):
+    fmax=np.maximum(np.maximum(fm,fp),np.minimum(2.0*f0-fm,2.0*f0-fp))
+    fmin=np.maximum(0.0,np.minimum(np.minimum(fm,fp),np.maximum(2.0*f0-fm,2.0*f0-fp)))
+    alpha=1.0/3.0
+    ap=fp-f0
+    am=f0-fm
+    fpmin=3.0*np.maximum(2.0*(f0-fmax),fmin-f0)
+    fpmax=3.0*np.minimum(2.0*(f0-fmin),fmax-f0)
+    fmmin=-fpmax
+    fmmax=-fpmin
+    ap=median3(ap,alpha*fpmin,alpha*fpmax)
+    am=median3(am,alpha*fmmin,alpha*fmmax)
+    a1=0.5*(ap+am)
+    a2=0.5*(ap-am)
+    return a1,a2
+
+def pfc(f,v,dt,dx,xoff=2):       # positive and flux conservative scheme
+    nx=len(f)
+    nu=v*dt/dx
+    anu=np.abs(nu)
+    sgnv=np.sign(v)
+    flux=np.zeros_like(f)
+    if anu == 0.0:
+        return
+    if sgnv > 0:
+        fm=f[0:-3]
+        f0=f[1:-2]
+        fp=f[2:-1]
+    else:
+        fm=f[1:-2]
+        f0=f[2:-1]
+        fp=f[3:  ]
+    a1,a2=pfc_coef(fm,f0,fp)
+    flux[2:-1]=pfc_flux(f0,a1,a2,anu,sgnv)
+    f[xoff:nx-xoff]-=nu*(flux[xoff+1:nx-xoff+1]-flux[xoff:nx-xoff])
     
 def main(t,tmax):
     fcpy=np.zeros_like(f)
     while(t < tmax):
         bc1d(f,xoff,0)
-        if (0):                 # 1 for SL scheme, 0 for FV-RK2 scheme
+        if (1):                 # 1 for SL scheme, 0 for FV-RK2 scheme
             csl3rd(f,v,dt,dx,xoff)
+            # pfc(f,v,dt,dx,xoff)
         else :
             fcpy=f.copy()
             musclmm(f,v,dt,dx,xoff)
